@@ -2,7 +2,7 @@ package fs
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"path"
 
@@ -99,7 +99,7 @@ func (f *file) Read() ([]byte, error) {
 	}
 	defer reader.Close()
 
-	bytes, err := ioutil.ReadAll(reader)
+	bytes, err := io.ReadAll(reader)
 	if err != nil {
 		return f.content, err
 	}

@@ -16,9 +16,10 @@ func SupportBanner(p *PluginParameter) error {
 			return nil
 		} else {
 			var table = logger.GetTable(2)
-			table.Row("Name", "Version", "Commit")
-			table.Row(p.Metadata.Name, p.Metadata.Version, p.Metadata.Commit)
-			return table.End()
+			return table.
+				Row("Name", "Version", "Commit").
+				Row(p.Metadata.Name, p.Metadata.Version, p.Metadata.Commit).
+				End()
 		}
 	})
 	return nil

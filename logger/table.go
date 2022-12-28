@@ -48,12 +48,11 @@ func (t *Table) ToMsg(msg ...string) string {
 	return str.String()
 }
 
-func (t *Table) Row(msg ...string) error {
+func (t *Table) Row(msg ...string) *Table {
 	if t.IsInitial() {
 		t.printer.Write(t.writer, t.ToMsg(msg...))
-		return nil
 	}
-	return errTableNotInitial
+	return t
 }
 
 func (t *Table) End() error {

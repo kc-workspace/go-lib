@@ -15,15 +15,11 @@ func TestTableError(t *testing.T) {
 	var printer = logger.NewPrinter(buffer1)
 	var table = logger.NewTable(printer, 2)
 
-	assertion.NewName("error from Row()").
-		WithError(table.Row("hello", "world")).
-		WithExpected("you never initial table").
-		MustContainError()
 	assertion.NewName("empty output").
 		WithActual(buffer1.String()).
 		WithExpected("").
 		MustEqual()
-	assertion.NewName("silent end").
+	assertion.NewName("error when call end without init first").
 		WithError(table.End()).
 		WithExpected("you never initial table").
 		MustContainError()
@@ -38,8 +34,9 @@ func TestNewTable(t *testing.T) {
 	table.SetSize(2).Init()
 
 	assertion.NewName("not error").
-		WithError(table.Row("hello", "world")).
-		MustNotError()
+		WithActual(table.Row("hello", "world")).
+		WithExpected(table).
+		MustEqual()
 	assertion.NewName("able to call End()").
 		WithError(table.End()).
 		MustNotError()
