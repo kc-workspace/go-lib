@@ -32,7 +32,6 @@ jobs:
           go-version-file: 'go.work'
       - id: module
         name: Get modules from go workspace
-        working-directory: golang
         run: |
           printf "names=" >> "$GITHUB_OUTPUT"
           go work edit -json | jq -c -r '[.Use[].DiskPath] | map_values(. + "/...")[]' | tr '\n' ' ' >> "$GITHUB_OUTPUT"
@@ -59,7 +58,6 @@ jobs:
           go test -coverprofile=./coverage.out ${{ env.GO_PACKAGE_NAME }}/...
           go tool cover -func coverage.out
       - name: Coverage
-        working-directory: golang
         run: |
           coverage="$(go tool cover -func coverage.out | grep -Eo "[0-9.]+" | tail -n 1)"
           rounded="$(printf "%.0f" "$coverage")"
