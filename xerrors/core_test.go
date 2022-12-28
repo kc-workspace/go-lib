@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/kc-workspace/go-lib/utils"
+	"github.com/kc-workspace/go-lib/random"
 	"github.com/kc-workspace/go-lib/xerrors"
 	"github.com/kc-workspace/go-lib/xtests"
 )
 
 func Mock() error {
-	return String(utils.RandString(10))
+	return String(random.New().FixedAlphaNumericString(10))
 }
 
 func String(s string) error {

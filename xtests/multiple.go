@@ -29,3 +29,11 @@ func (a *Assertions) NewName(name string) *Assertion {
 		T:        a.T,
 	}
 }
+
+func (a *Assertions) NewCase(c TestCase) bool {
+	var _a = a.NewName(c.Name)
+	return _a.
+		WithActual(c.Actual).
+		WithExpected(c.Expected).
+		Must(c.Checker...)
+}

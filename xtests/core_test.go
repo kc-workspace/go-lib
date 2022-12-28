@@ -1,6 +1,7 @@
 package xtests_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/kc-workspace/go-lib/xtests"
@@ -30,7 +31,31 @@ func TestXTest(t *testing.T) {
 		WithActualAndBool(nil, false).
 		MustBeNil()
 
+	assertion.NewName(xtests.MUST_ERROR).
+		WithError(errors.New("error")).
+		MustError()
+
+	assertion.NewName(xtests.MUST_NOT_ERROR).
+		WithError(nil).
+		MustNotError()
+
+	assertion.NewName(xtests.MUST_NOT_ERROR).
+		WithError(errors.New("def")).
+		WithExpected("def").
+		MustEqualError()
+
+	assertion.NewName(xtests.MUST_NOT_ERROR).
+		WithError(errors.New("abc def ghi")).
+		WithExpected("def").
+		MustContainError()
+
 	assertion.NewName(xtests.MUST_BE_NIL+xtests.MUST_ERROR).
 		WithActualAndBool(nil, false).
 		Must(xtests.MUST_BE_NIL, xtests.MUST_ERROR)
+
+	for _, tc := range []xtests.TestCase{
+		xtests.NewCase("name", "123", "123", xtests.MUST_EQUAL, xtests.MUST_NOT_BE_NIL),
+	} {
+		assertion.NewCase(tc)
+	}
 }

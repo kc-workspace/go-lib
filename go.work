@@ -9,6 +9,7 @@ use (
 	./fs
 	./logger
 	./mapper
+	./random
 	./runner
 	./scheduler
 	./utils

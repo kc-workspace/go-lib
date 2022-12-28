@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"text/template"
 
-	"github.com/kc-workspace/go-lib/utils"
+	"github.com/kc-workspace/go-lib/random"
 )
 
 func New(name string) *template.Template {
@@ -22,7 +22,8 @@ func File(name string, path string) (*template.Template, error) {
 }
 
 func Buffer(content string, data interface{}, target *bytes.Buffer) error {
-	var tpl, err = New(utils.RandString(7)).Parse(content)
+	var rand = random.New().FixedAlphaNumericString(7)
+	var tpl, err = New(rand).Parse(content)
 	if err != nil {
 		return err
 	}
