@@ -1,0 +1,68 @@
+name: Pull request
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GO_PACKAGE_NAME: "github.com/kc-workspace/go-lib"
+  COVERAGE_THRESHOLD: 50
+
+jobs:
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup golang
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: 'go.work'
+      - id: module
+        name: Get modules from go workspace
+        working-directory: golang
+        run: |
+          printf "names=" >> "$GITHUB_OUTPUT"
+          go work edit -json | jq -c -r '[.Use[].DiskPath] | map_values(. + "/...")[]' | tr '\n' ' ' >> "$GITHUB_OUTPUT"
+          echo >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
+      - name: Linting with golangci
+        uses: golangci/golangci-lint-action@v3
+        with:
+          args: ${{ steps.module.outputs.names }}
+  testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup golang
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: 'go.work'
+      - name: Building
+        run: |
+          go build ${{ env.GO_PACKAGE_NAME }}/...
+      - name: Testing
+        run: |
+          go test -coverprofile=./coverage.out ${{ env.GO_PACKAGE_NAME }}/...
+          go tool cover -func coverage.out
+      - name: Coverage
+        working-directory: golang
+        run: |
+          coverage="$(go tool cover -func coverage.out | grep -Eo "[0-9.]+" | tail -n 1)"
+          rounded="$(printf "%.0f" "$coverage")"
+          if [[ "$rounded" -lt "${{ env.COVERAGE_THRESHOLD }}" ]]; then
+            exit 1
+          fi

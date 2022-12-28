@@ -1,0 +1,18 @@
+go 1.19
+
+use (
+	./caches
+	./commandline
+	./configs
+	./datatype
+	./dotenv
+	./fs
+	./logger
+	./mapper
+	./runner
+	./scheduler
+	./utils
+	./xerrors
+	./xtemplates
+	./xtests
+)
