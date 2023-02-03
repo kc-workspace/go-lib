@@ -7,7 +7,11 @@ import (
 )
 
 func BuildEnvPrefix(prefix string) (output string) {
-	output = path.Base(prefix)
+	if prefix != "" {
+		// If prefix is empty string, path.Base will convert to '.'
+		output = path.Base(prefix)
+	}
+
 	output = strings.ToUpper(output)
 	output = strings.ReplaceAll(output, ".", "__")
 	output = strings.ReplaceAll(output, "-", "_")
