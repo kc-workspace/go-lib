@@ -2,6 +2,7 @@ package plugins
 
 import (
 	"os"
+	"path"
 
 	"github.com/kc-workspace/go-lib/commandline/flags"
 	"github.com/kc-workspace/go-lib/commandline/hooks"
@@ -28,7 +29,7 @@ func SupportConfig(p *PluginParameter) error {
 
 	p.NewFlags(flags.Array{
 		Name:    "configs",
-		Default: []string{},
+		Default: []string{path.Join(wd, "configs")},
 		Usage:   "configuration file/directory. directory must contains only json files and file must be json",
 		Action: func(data []string) mapper.Mapper {
 			var result = mapper.New()
