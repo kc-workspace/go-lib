@@ -64,7 +64,14 @@ func (c *cli) Start(args []string) error {
 		return err
 	}
 
-	option, parsed, err := c.flags.Build(args[0], args[1:])
+	var name string
+	if c.Metadata != nil && c.Metadata.Name != "" {
+		name = c.Metadata.Name
+	} else {
+		name = args[0]
+	}
+
+	option, parsed, err := c.flags.Build(name, args[1:])
 	if err != nil {
 		return err
 	}

@@ -40,7 +40,12 @@ func SupportConfig(p *PluginParameter) error {
 	})
 
 	p.NewHook(hooks.BEFORE_COMMAND, func(config mapper.Mapper) error {
-		var addition, err = configs.New("config", config).Build(os.Environ())
+		var name = p.Metadata.Name
+		if name == "" {
+			name = DEFAULT_ENV_PREFIX
+		}
+
+		var addition, err = configs.New(name, config).Build(os.Environ())
 		if err != nil {
 			return err
 		}

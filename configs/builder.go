@@ -83,7 +83,7 @@ func (b *Builder) Build(environments []string) (mapper.Mapper, error) {
 	}
 	b.OverrideStrings(args)
 
-	configs, err := fs.Build(result.Mi("fs").Mi(b.name), result.Mi("variables"))
+	configs, err := fs.Build(result.Mi("fs").Mi("config"), result.Mi("variables"))
 	if err != nil {
 		return result, err
 	}
@@ -99,7 +99,7 @@ func (b *Builder) Build(environments []string) (mapper.Mapper, error) {
 	})
 
 	// 2. override it with environment
-	fromEnv, err := ParseConfigFromEnv(environments)
+	fromEnv, err := ParseConfigFromEnv(b.name, environments)
 	if err != nil {
 		return result, err
 	}

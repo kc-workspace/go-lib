@@ -12,6 +12,10 @@ import (
 	"github.com/kc-workspace/go-lib/mapper"
 )
 
+const (
+	DEFAULT_ENV_PREFIX = "kcgo"
+)
+
 func SupportListConfig(p *PluginParameter) error {
 	p.NewCommand(&commands.Command{
 		Name: "config",
@@ -33,6 +37,10 @@ func SupportListConfig(p *PluginParameter) error {
 		Executor: func(p *commands.ExecutorParameter) error {
 			var withData = p.Config.Mi("internal").Mi("flag").Bo("data", false)
 			var all = p.Config.Mi("internal").Mi("flag").Bo("all", false)
+			var prefix = p.Meta.Name
+			if prefix == "" {
+				prefix = DEFAULT_ENV_PREFIX
+			}
 
 			var headers = []string{"Key", "Environment"}
 			if withData {
@@ -51,7 +59,7 @@ func SupportListConfig(p *PluginParameter) error {
 					continue
 				}
 
-				var env = configs.KeyToEnv(key)
+				var env = configs.KeyToEnv(prefix, key)
 				var row = []string{key, env}
 				if withData {
 					var value, _ = p.Config.Get(key)
