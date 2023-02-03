@@ -12,11 +12,11 @@ func TestParseConfigFromEnv(t *testing.T) {
 	var assertion = xtests.New(t)
 
 	assertion.NewName("normal environment").
-		WithActualAndError(configs.ParseConfigFromEnv([]string{"FTH_FREQTRADE_STATUS=running"})).
+		WithActualAndError(configs.ParseConfigFromEnv("FTH", []string{"FTH_FREQTRADE_STATUS=running"})).
 		WithExpected(mapper.New().Set("freqtrade-status", "running")).
 		MustDeepEqual()
 	assertion.NewName("unknown environment").
-		WithActualAndError(configs.ParseConfigFromEnv([]string{"FTHSTATUS=running"})).
+		WithActualAndError(configs.ParseConfigFromEnv("FTH", []string{"FTHSTATUS=running"})).
 		WithExpected(mapper.New()).
 		MustDeepEqual()
 }

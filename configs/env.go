@@ -1,13 +1,15 @@
 package configs
 
-import "github.com/kc-workspace/go-lib/mapper"
+import (
+	"github.com/kc-workspace/go-lib/mapper"
+)
 
 // Return map of string, client will decide how to parse string data
-func ParseConfigFromEnv(environments []string) (mapper.Mapper, error) {
+func ParseConfigFromEnv(prefix string, environments []string) (mapper.Mapper, error) {
 	var result = mapper.New()
 	for _, env := range environments {
 		if k, v, ok := ParseOverride(env); ok {
-			if key, ok := EnvToKey(k); ok {
+			if key, ok := EnvToKey(BuildEnvPrefix(prefix), k); ok {
 				result.Set(key, v)
 			}
 		}

@@ -2,32 +2,42 @@ package configs
 
 import (
 	"fmt"
+	"path"
 	"strings"
 )
 
-func IsEnvKey(k string) bool {
-	return strings.HasPrefix(k, ENV_PREFIX+"_")
+func BuildEnvPrefix(prefix string) (output string) {
+	output = path.Base(prefix)
+	output = strings.ToUpper(output)
+	output = strings.ReplaceAll(output, ".", "__")
+	output = strings.ReplaceAll(output, "-", "_")
+
+	return
 }
 
-func IsCEnvKey(k string) bool {
-	return strings.HasPrefix(k, ENV_CUSTOM_PREFIX+"_")
+func IsEnvKey(prefix, k string) bool {
+	return strings.HasPrefix(k, prefix+"_")
 }
 
-func EnvToKey(c string) (string, bool) {
-	if (!IsCEnvKey(c) && !IsEnvKey(c)) || strings.Contains(c, "___") {
+func IsCEnvKey(prefix, k string) bool {
+	return strings.HasPrefix(k, prefix+CUSTOM_PREFIX+"_")
+}
+
+func EnvToKey(prefix, c string) (string, bool) {
+	if (!IsCEnvKey(prefix, c) && !IsEnvKey(prefix, c)) || strings.Contains(c, "___") {
 		return "", false
 	}
 
 	var output string = ""
-	if IsCEnvKey(c) {
-		output = strings.Replace(c, ENV_CUSTOM_PREFIX+"_", "", 1)
-	} else if IsEnvKey(c) {
-		output = strings.Replace(c, ENV_PREFIX+"_", "", 1)
+	if IsCEnvKey(prefix, c) {
+		output = strings.Replace(c, prefix+CUSTOM_PREFIX+"_", "", 1)
+	} else if IsEnvKey(prefix, c) {
+		output = strings.Replace(c, prefix+"_", "", 1)
 	}
 
 	output = strings.ReplaceAll(output, "__", ".")
 	output = strings.ReplaceAll(output, "_", "-")
-	if IsCEnvKey(c) {
+	if IsCEnvKey(prefix, c) {
 		output = "_." + output
 	}
 
@@ -36,14 +46,14 @@ func EnvToKey(c string) (string, bool) {
 
 // NOTE: ou should not use _ as a key, since we cannot parse underscroll back after it created environment variable
 // Please use - (dash) instead
-func KeyToEnv(key string) string {
+func KeyToEnv(prefix, key string) string {
 	if key[0] == '_' {
-		var result = fmt.Sprintf("%s-%s", ENV_CUSTOM_PREFIX, key[2:])
+		var result = fmt.Sprintf("%s-%s", prefix+CUSTOM_PREFIX, key[2:])
 		return strings.ToUpper(
 			strings.ReplaceAll(strings.ReplaceAll(result, ".", "__"), "-", "_"),
 		)
 	} else {
-		var result = fmt.Sprintf("%s-%s", ENV_PREFIX, key)
+		var result = fmt.Sprintf("%s-%s", prefix, key)
 		return strings.ToUpper(
 			strings.ReplaceAll(strings.ReplaceAll(result, ".", "__"), "-", "_"),
 		)
