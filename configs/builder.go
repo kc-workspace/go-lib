@@ -83,20 +83,22 @@ func (b *Builder) Build(environments []string) (mapper.Mapper, error) {
 	}
 	b.OverrideStrings(args)
 
-	configs, err := fs.Build(result.Mi("fs").Mi("config"), result.Mi("variables"))
-	if err != nil {
-		return result, err
-	}
-
 	// 1. load config from directories and files
-	b.logger.Debug("loading config from %v", configs.String())
-	fromFile, err := LoadConfigFromFileSystem(configs.Multiple(), mapper.New(), b.strategy) // create empty data to not pass template yet
-	if err != nil {
-		return result, err
+	if result.Mi("fs").Has("config") {
+		configs, err := fs.Build(result.Mi("fs").Mi("config"), result.Mi("variables"))
+		if err != nil {
+			return result, err
+		}
+
+		b.logger.Debug("loading config from %v", configs.String())
+		fromFile, err := LoadConfigFromFileSystem(configs.Multiple(), mapper.New(), b.strategy) // create empty data to not pass template yet
+		if err != nil {
+			return result, err
+		}
+		fromFile.ForEach(func(key string, value interface{}) {
+			result.Set(key, value)
+		})
 	}
-	fromFile.ForEach(func(key string, value interface{}) {
-		result.Set(key, value)
-	})
 
 	// 2. override it with environment
 	fromEnv, err := ParseConfigFromEnv(BuildEnvPrefix(b.name), environments)
