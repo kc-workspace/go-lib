@@ -31,10 +31,14 @@ func SupportConfig(p *PluginParameter) error {
 		Default: []string{},
 		Usage:   "configuration file/directory. directory must contains only json files and file must be json",
 		Action: func(data []string) mapper.Mapper {
-			return mapper.New().
-				Set("fs.config.type", "auto").
-				Set("fs.config.mode", "multiple").
-				Set("fs.config.fullpath", data)
+			var result = mapper.New()
+			if len(data) > 0 {
+				result.
+					Set("fs.config.type", "auto").
+					Set("fs.config.mode", "multiple").
+					Set("fs.config.fullpath", data)
+			}
+			return result
 		},
 	})
 
