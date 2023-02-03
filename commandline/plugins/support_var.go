@@ -8,8 +8,7 @@ import (
 	"github.com/kc-workspace/go-lib/mapper"
 )
 
-// SupportFSVar will add --fsvar "<name>=<value>" for assign data to fs.variables
-// @deprecated SupportFSVar, use SupportVar instead
+// SupportVar will add --var "<name>=<value>" for assign data to variables.*
 func SupportVar(p *PluginParameter) error {
 	p.NewFlags(flags.Array{
 		Name:    "var",
