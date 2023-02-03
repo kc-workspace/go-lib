@@ -99,7 +99,7 @@ func (b *Builder) Build(environments []string) (mapper.Mapper, error) {
 	})
 
 	// 2. override it with environment
-	fromEnv, err := ParseConfigFromEnv(b.name, environments)
+	fromEnv, err := ParseConfigFromEnv(BuildEnvPrefix(b.name), environments)
 	if err != nil {
 		return result, err
 	}

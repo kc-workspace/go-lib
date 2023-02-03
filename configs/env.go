@@ -9,7 +9,7 @@ func ParseConfigFromEnv(prefix string, environments []string) (mapper.Mapper, er
 	var result = mapper.New()
 	for _, env := range environments {
 		if k, v, ok := ParseOverride(env); ok {
-			if key, ok := EnvToKey(BuildEnvPrefix(prefix), k); ok {
+			if key, ok := EnvToKey(prefix, k); ok {
 				result.Set(key, v)
 			}
 		}
