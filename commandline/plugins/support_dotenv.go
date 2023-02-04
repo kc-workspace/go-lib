@@ -1,9 +1,6 @@
 package plugins
 
 import (
-	"os"
-	"path"
-
 	"github.com/kc-workspace/go-lib/commandline/flags"
 	"github.com/kc-workspace/go-lib/commandline/hooks"
 	"github.com/kc-workspace/go-lib/dotenv"
@@ -13,20 +10,19 @@ import (
 
 // SupportDotEnv will create --envs option for custom load .env files
 func SupportDotEnv(p *PluginParameter) error {
-	var wd, err = os.Getwd()
-	if err != nil {
-		return err
-	}
-
 	p.NewFlags(flags.Array{
 		Name:    "envs",
-		Default: []string{path.Join(wd, ".env")},
+		Default: []string{},
 		Usage:   "environment file/directory. each file must following .env regulation",
 		Action: func(data []string) mapper.Mapper {
-			return mapper.New().
-				Set("fs.env.type", "auto").
-				Set("fs.env.mode", "multiple").
-				Set("fs.env.fullpath", data)
+			if len(data) > 0 {
+				return mapper.New().
+					Set("fs.env.type", "auto").
+					Set("fs.env.mode", "multiple").
+					Set("fs.env.fullpath", data)
+			}
+
+			return mapper.New()
 		},
 	})
 
