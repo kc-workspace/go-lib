@@ -11,6 +11,7 @@ func SupportLogLevel() Plugin {
 	return func(p *PluginParameter) error {
 		p.NewFlags(flags.Int{
 			Name:    "log-level",
+			Aliases: []string{"l"},
 			Default: 2,
 			Usage:   "setup log level; 0 is silent and 4 is verbose",
 			Action: func(data int64) mapper.Mapper {
@@ -20,6 +21,7 @@ func SupportLogLevel() Plugin {
 
 		p.NewFlags(flags.Bool{
 			Name:    "debug",
+			Aliases: []string{"D"},
 			Default: false,
 			Usage:   "mark current log to debug mode",
 			Action: func(data bool) mapper.Mapper {
