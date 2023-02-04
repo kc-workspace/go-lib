@@ -10,7 +10,6 @@ const (
 	BEFORE_PLUGIN = "before-plugin"
 
 	// run after all plugins are loaded
-
 	// This will execute after all plugins are loaded (#2).
 	// The config on this stage will contains plugins setup data
 	// You might use this to setup config that relate to multiple plugins
@@ -33,4 +32,10 @@ const (
 	//   `internal.error` - command execution result (error)
 	// You might use this to override the error or print summary result
 	AFTER_COMMAND = "after-command"
+
+	// This is special hook for help commands.
+	// The config Mapper on this hooks
+	// will have special 'internal.command' as *commands.Manager,
+	// and 'internal.flag' as *flags.Manager
+	INTERNAL_HELP = "internal-help"
 )

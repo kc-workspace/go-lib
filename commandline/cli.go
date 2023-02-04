@@ -1,6 +1,8 @@
 package commandline
 
 import (
+	"fmt"
+
 	"github.com/kc-workspace/go-lib/caches"
 	"github.com/kc-workspace/go-lib/commandline/commands"
 	"github.com/kc-workspace/go-lib/commandline/flags"
@@ -11,7 +13,7 @@ import (
 	"github.com/kc-workspace/go-lib/mapper"
 )
 
-type cli struct {
+type Commandline struct {
 	Metadata *models.Metadata
 	flags    *flags.Manager // global flags
 	commands *commands.Manager
@@ -22,27 +24,31 @@ type cli struct {
 	logger *logger.Logger
 }
 
-func (c *cli) Flag(flag flags.Flag) *cli {
+func (c *Commandline) Flag(flag flags.Flag) *Commandline {
 	c.flags.Add(flag)
 	return c
 }
 
-func (c *cli) Command(cmd *commands.Command) *cli {
+func (c *Commandline) Command(cmd *commands.Command) *Commandline {
 	c.commands.Add(cmd)
 	return c
 }
 
-func (c *cli) Hook(t hooks.Type, hook hooks.Hook) *cli {
+func (c *Commandline) Hook(t hooks.Type, hook hooks.Hook) *Commandline {
 	c.hooks.Add(t, hook)
 	return c
 }
 
-func (c *cli) Plugin(plugin plugins.Plugin) *cli {
+func (c *Commandline) Plugin(plugin plugins.Plugin) *Commandline {
 	c.plugins.Add(plugin)
 	return c
 }
 
-func (c *cli) Start(args []string) error {
+func (c *Commandline) Start(args []string) error {
+	if c.Metadata.Name == "" {
+		c.Metadata.Name = args[0]
+	}
+
 	c.logger.Debug("starting %s command", c.Metadata.Name)
 
 	var config = mapper.New()
@@ -67,14 +73,7 @@ func (c *cli) Start(args []string) error {
 		return err
 	}
 
-	var name string
-	if c.Metadata != nil && c.Metadata.Name != "" {
-		name = c.Metadata.Name
-	} else {
-		name = args[0]
-	}
-
-	option, parsed, err := c.flags.Build(name, args[1:])
+	option, parsed, err := c.flags.Build(c.Metadata.Name, args[1:])
 	if err != nil {
 		return err
 	}
@@ -85,15 +84,32 @@ func (c *cli) Start(args []string) error {
 		return err
 	}
 
+	// get command object and command args
 	var cmd, final = c.commands.Get(parsed, config)
 	if len(final) > 0 {
 		config.Set("internal.command", cmd.Name).Set("internal.args", final)
 	}
 
+	// special hooks for help command
+	if err = c.hooks.Start(
+		hooks.INTERNAL_HELP,
+		config.
+			Set("internal.command", c.commands).
+			Set("internal.flag", c.flags),
+	); err != nil {
+		return err
+	}
+
+	// Delete special keys for internal-help only
+	config.
+		Del("internal.command").
+		Del("internal.flag")
+
 	if err = c.hooks.Start(hooks.BEFORE_COMMAND, config); err != nil {
 		return err
 	}
 
+	c.logger.Debug("executing command %s with %v", cmd.Name, final)
 	var cmderr = cmd.Start(&commands.ExecutorParameter{
 		Name:   cmd.Name,
 		Meta:   c.Metadata,
@@ -110,4 +126,13 @@ func (c *cli) Start(args []string) error {
 	}
 
 	return cmderr
+}
+
+func (c *Commandline) String() string {
+	return fmt.Sprintf("%s commandline {plugin=%d, command=%d, flag=%d}",
+		c.Metadata.Name,
+		c.plugins.Size(),
+		c.commands.Size(),
+		c.flags.Size(),
+	)
 }
