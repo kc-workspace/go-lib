@@ -15,7 +15,7 @@ func main() {
 		Plugin(plugins.SupportHelp()).
 		Plugin(plugins.SupportConfig("gol", []string{})).
 		Plugin(plugins.SupportVar()).
-		Plugin(plugins.SupportDotEnv()).
+		Plugin(plugins.SupportDotEnv(false)).
 		Plugin(plugins.SupportLogLevel()).
 		Start(os.Args)
 
