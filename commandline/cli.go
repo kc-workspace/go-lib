@@ -43,8 +43,11 @@ func (c *cli) Plugin(plugin plugins.Plugin) *cli {
 }
 
 func (c *cli) Start(args []string) error {
+	c.logger.Debug("starting %s command", c.Metadata.Name)
+
 	var config = mapper.New()
 	config.Set("internal.meta", c.Metadata.ToMapper())
+
 	if err := c.hooks.Start(hooks.BEFORE_PLUGIN, config); err != nil {
 		return err
 	}

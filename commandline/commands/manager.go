@@ -3,12 +3,14 @@ package commands
 import (
 	"fmt"
 
+	"github.com/kc-workspace/go-lib/logger"
 	"github.com/kc-workspace/go-lib/mapper"
 )
 
 type Manager struct {
 	keys     []string
 	commands map[string]*Command
+	logger   *logger.Logger
 }
 
 func (m *Manager) Add(cmd *Command) {
@@ -16,8 +18,16 @@ func (m *Manager) Add(cmd *Command) {
 	m.commands[cmd.Name] = cmd
 }
 
+func (m *Manager) Size() int {
+	return len(m.keys)
+}
+
 func (m *Manager) Get(args []string, config mapper.Mapper) (*Command, []string) {
+	m.logger.Debug("finding command from %d commands list", m.Size())
+
 	var name, parsed = getName(m.keys, args, config)
+	m.logger.Debug("parsed command %s: %v", name, parsed)
+
 	var cmd = m.commands[name]
 	if cmd == nil {
 		return &Command{
