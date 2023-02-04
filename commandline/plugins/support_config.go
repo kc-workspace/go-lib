@@ -73,7 +73,8 @@ func SupportConfig(defaultPrefix string, defaultConfig []string) Plugin {
 		})
 
 		p.NewCommand(&commands.Command{
-			Name: "config",
+			Name:  "config",
+			Usage: "list all possible config user can set",
 			Flags: flags.New(flags.Bool{
 				Name:    "data",
 				Default: false,
