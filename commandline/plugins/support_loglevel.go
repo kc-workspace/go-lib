@@ -7,12 +7,12 @@ import (
 	"github.com/kc-workspace/go-lib/mapper"
 )
 
-func SupportLogLevel() Plugin {
+func SupportLogLevel(defaultLevel logger.Level) Plugin {
 	return func(p *PluginParameter) error {
 		p.NewFlags(flags.Int{
 			Name:    "log-level",
 			Aliases: []string{"l"},
-			Default: 2,
+			Default: int64(defaultLevel),
 			Usage:   "setup log level; 0 is silent and 4 is verbose",
 			Action: func(data int64) mapper.Mapper {
 				return mapper.New().Set("internal.log.level", data)
