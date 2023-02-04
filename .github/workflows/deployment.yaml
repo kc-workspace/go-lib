@@ -8,7 +8,6 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: /app
 
 permissions:
   contents: write
@@ -39,7 +38,7 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Summary
-        run: |
-          echo "To force update go-proxy index please use below command"
-          echo "go list -m 'github.com/${{ github.repository }}@${{ github.ref_name }}'"
+      - name: Update go-proxy index
+        run: go list -m 'github.com/${{ github.repository }}@${{ github.ref_name }}'
+        env:
+          GO_PROXY: proxy.golang.org
