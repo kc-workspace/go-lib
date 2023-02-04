@@ -84,7 +84,7 @@ func (b *Builder) Build(environments []string) (mapper.Mapper, error) {
 	b.OverrideStrings(args)
 
 	// 1. load config from directories and files
-	if result.Mi("fs").Has("config") {
+	if result.Has("fs.config") {
 		configs, err := fs.Build(result.Mi("fs").Mi("config"), result.Mi("variables"))
 		if err != nil {
 			return result, err
