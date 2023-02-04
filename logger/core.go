@@ -14,8 +14,15 @@ func GetLevel() Level {
 	return level
 }
 
+// Get global printer
 func GetPrinter() *Printer {
 	return printer
+}
+
+// Set global printer.
+// this should be run at very first line on main() function
+func SetPrinter(p *Printer) {
+	printer = p
 }
 
 func GetTable(size uint) *Table {
