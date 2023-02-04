@@ -91,13 +91,15 @@ func (c *Commandline) Start(args []string) error {
 	}
 
 	// special hooks for help command
-	if err = c.hooks.Start(
-		hooks.INTERNAL_HELP,
-		config.
-			Set("internal.command", c.commands).
-			Set("internal.flag", c.flags),
-	); err != nil {
-		return err
+	if config.Mi("internal").Si("command") == "help" {
+		if err = c.hooks.Start(
+			hooks.INTERNAL_HELP,
+			config.
+				Set("internal.command", c.commands).
+				Set("internal.flag", c.flags),
+		); err != nil {
+			return err
+		}
 	}
 
 	// Delete special keys for internal-help only
