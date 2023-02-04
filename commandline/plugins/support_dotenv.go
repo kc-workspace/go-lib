@@ -45,17 +45,20 @@ func SupportDotEnv(p *PluginParameter) error {
 			return nil
 		}
 
-		envs, err := fs.Build(m.Mi("fs").Mi("env"), m.Mi("variables"))
-		if err != nil {
-			p.Logger.Warn("cannot found environment file: %v", err)
-			return nil
+		if m.Has("fs.env") {
+			envs, err := fs.Build(m.Mi("fs").Mi("env"), m.Mi("variables"))
+			if err != nil {
+				p.Logger.Warn("cannot found environment file: %v, skipped", err)
+				return nil
+			}
+
+			// write environment value from .env file
+			err = dotenv.Overload(envs.Multiple()...)
+			if err != nil {
+				p.Logger.Warn("dotenv return error: %v", err)
+			}
 		}
 
-		// write environment value from .env file
-		err = dotenv.Overload(envs.Multiple()...)
-		if err != nil {
-			p.Logger.Warn("dotenv return error: %v", err)
-		}
 		return nil
 	})
 
