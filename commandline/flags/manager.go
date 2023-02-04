@@ -16,6 +16,11 @@ type Manager struct {
 }
 
 func (m *Manager) Add(flag Flag) {
+	if _, exist := m.flags[flag.FlagName()]; exist {
+		// Do not duplicate flags
+		return
+	}
+
 	m.keys = append(m.keys, flag.FlagName())
 	m.flags[flag.FlagName()] = flag
 }

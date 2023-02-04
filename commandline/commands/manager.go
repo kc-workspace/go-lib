@@ -16,6 +16,11 @@ type Manager struct {
 }
 
 func (m *Manager) Add(cmd *Command) {
+	if _, exist := m.commands[cmd.Name]; exist {
+		// Do not duplicate commands
+		return
+	}
+
 	m.keys = append(m.keys, cmd.Name)
 	// add command name to command mapping
 	m.commands[cmd.Name] = cmd
