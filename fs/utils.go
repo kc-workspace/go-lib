@@ -2,8 +2,6 @@ package fs
 
 import (
 	"fmt"
-
-	"github.com/kc-workspace/go-lib/mapper"
 )
 
 func Copy(a, b FileSystem) error {
@@ -16,21 +14,6 @@ func Copy(a, b FileSystem) error {
 	}
 
 	return fmt.Errorf("cannot copy from directory (%s) to file (%s)", a.Abs(), b.Abs())
-}
-
-func ToObject(data interface{}, config mapper.Mapper) mapper.Mapper {
-	// Pass FS object
-	if m, ok := mapper.ToMapper(data); ok {
-		return m
-	}
-
-	// Pass FS name
-	if s, ok := data.(string); ok {
-		return config.Mi("fs").Mi(s)
-	}
-
-	// Error
-	return mapper.New()
 }
 
 // ToFiles will resolve all directory into file
