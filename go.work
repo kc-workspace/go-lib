@@ -12,6 +12,7 @@ use (
 	./random
 	./runner
 	./scheduler
+	./usage
 	./utils
 	./xerrors
 	./xtemplates
