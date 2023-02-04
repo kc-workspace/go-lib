@@ -7,6 +7,7 @@ import (
 
 	"github.com/kc-workspace/go-lib/datatype"
 	"github.com/kc-workspace/go-lib/utils"
+	"gopkg.in/yaml.v3"
 )
 
 func Get(m map[string]interface{}, key string) (interface{}, error) {
@@ -114,6 +115,10 @@ func ToJson(m interface{}) ([]byte, error) {
 	return json.Marshal(m)
 }
 
+func ToYaml(m interface{}) ([]byte, error) {
+	return yaml.Marshal(m)
+}
+
 func ToFormatJson(m interface{}) ([]byte, error) {
 	return json.MarshalIndent(m, "", "  ")
 }
@@ -121,6 +126,12 @@ func ToFormatJson(m interface{}) ([]byte, error) {
 func FromJson(content []byte) (Mapper, error) {
 	var empty = make(map[string]interface{})
 	var err = json.Unmarshal(content, &empty)
+	return Mapper(empty), err
+}
+
+func FromYaml(content []byte) (Mapper, error) {
+	var empty = make(map[string]interface{})
+	var err = yaml.Unmarshal(content, &empty)
 	return Mapper(empty), err
 }
 

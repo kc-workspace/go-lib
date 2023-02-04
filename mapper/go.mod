@@ -13,4 +13,5 @@ require (
 	github.com/kc-workspace/go-lib/fs v0.0.0-20221228065809-443af0bb5db3 // indirect
 	github.com/kc-workspace/go-lib/random v0.0.0-20221228065809-443af0bb5db3 // indirect
 	github.com/kc-workspace/go-lib/xtemplates v0.0.0-20221228065809-443af0bb5db3 // indirect
+	gopkg.in/yaml.v3 v3.0.1
 )
