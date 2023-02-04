@@ -10,7 +10,24 @@ import (
 	"github.com/kc-workspace/go-lib/logger"
 )
 
-func New(cache *caches.Service, metadata *models.Metadata) *cli {
+func New(metadata *models.Metadata) *cli {
+	return &cli{
+		Metadata: metadata,
+		flags:    flags.New(),
+		commands: commands.New(),
+		hooks:    hooks.New(),
+		plugins:  plugins.New(),
+
+		cache:  caches.Global,
+		logger: logger.Get("commandline"),
+	}
+}
+
+func NewCustom(
+	metadata *models.Metadata,
+	cache *caches.Service,
+	logger *logger.Logger,
+) *cli {
 	return &cli{
 		Metadata: metadata,
 		flags:    flags.New(),
@@ -19,6 +36,6 @@ func New(cache *caches.Service, metadata *models.Metadata) *cli {
 		plugins:  plugins.New(),
 
 		cache:  cache,
-		logger: logger.Get("commandline"),
+		logger: logger,
 	}
 }
