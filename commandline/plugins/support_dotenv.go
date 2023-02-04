@@ -1,6 +1,9 @@
 package plugins
 
 import (
+	"os"
+	"path"
+
 	"github.com/kc-workspace/go-lib/commandline/flags"
 	"github.com/kc-workspace/go-lib/commandline/hooks"
 	"github.com/kc-workspace/go-lib/dotenv"
@@ -9,11 +12,35 @@ import (
 )
 
 // SupportDotEnv will create --envs option for custom load .env files
-func SupportDotEnv() Plugin {
+//
+// For parameters:
+//
+// If autoload is true, it will try to load $PWD/.env and log warn if not exist;
+// otherwise, it will not try to load any thing by default.
+func SupportDotEnv(autoload bool) Plugin {
 	return func(p *PluginParameter) error {
+		var wd, err = os.Getwd()
+		if err != nil {
+			return err
+		}
+
+		p.NewFlags(flags.String{
+			Name:    "pwd",
+			Default: wd,
+			Usage:   "current directory",
+			Action: func(data string) mapper.Mapper {
+				return mapper.New().Set("variables.current", data)
+			},
+		})
+
+		var defaultEnv = make([]string, 0)
+		if autoload {
+			defaultEnv = append(defaultEnv, path.Join(wd, ".env"))
+		}
+
 		p.NewFlags(flags.Array{
 			Name:    "envs",
-			Default: []string{},
+			Default: defaultEnv,
 			Usage:   "environment file/directory. each file must following .env regulation",
 			Action: func(data []string) mapper.Mapper {
 				if len(data) > 0 {
