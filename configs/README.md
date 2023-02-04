@@ -25,8 +25,7 @@ We have special key in json/argument is `_` or for environment is `FTC` for dyna
 All configuration files must be json format; otherwise, it will crash when loading. If you enter the directory, all files inside that directory must be json. Following key is forbidded for internal use only
 
 1. `internal` - for internal configuration
-2. `fs` - for file-system configuration
-3. `_` - for overrided cluster configuration
+2. `_` - for overrided cluster configuration
 
 > Be aware when you add config with uppercase, the environment will not works because environment result always return lower case.
 

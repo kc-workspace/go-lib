@@ -45,9 +45,9 @@ func SupportConfig(defaultPrefix string, defaultConfig []string) Plugin {
 				var result = mapper.New()
 				if len(data) > 0 {
 					result.
-						Set("fs.config.type", "auto").
-						Set("fs.config.mode", "multiple").
-						Set("fs.config.fullpath", data)
+						Set("internal.fs.config.type", "auto").
+						Set("internal.fs.config.mode", "multiple").
+						Set("internal.fs.config.fullpath", data)
 				}
 				return result
 			},

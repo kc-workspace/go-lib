@@ -45,9 +45,9 @@ func SupportDotEnv(autoload bool) Plugin {
 			Action: func(data []string) mapper.Mapper {
 				if len(data) > 0 {
 					return mapper.New().
-						Set("fs.env.type", "auto").
-						Set("fs.env.mode", "multiple").
-						Set("fs.env.fullpath", data)
+						Set("internal.fs.env.type", "auto").
+						Set("internal.fs.env.mode", "multiple").
+						Set("internal.fs.env.fullpath", data)
 				}
 
 				return mapper.New()
@@ -69,8 +69,11 @@ func SupportDotEnv(autoload bool) Plugin {
 				return nil
 			}
 
-			if m.Has("fs.env") {
-				envs, err := fs.Build(m.Mi("fs").Mi("env"), m.Mi("variables"))
+			if m.Has("internal.fs.env") {
+				envs, err := fs.Build(
+					m.Mi("internal").Mi("fs").Mi("env"),
+					m.Mi("variables"),
+				)
 				if err != nil {
 					p.Logger.Warn("cannot found environment file: %v, skipped", err)
 					return nil
