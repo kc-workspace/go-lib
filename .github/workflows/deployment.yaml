@@ -41,6 +41,12 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  post-release:
+    runs-on: ubuntu-latest
+    needs:
+      - release
+    steps:
       # https://go.dev/doc/modules/publishing
       - name: Update Go Proxy
         run: go list -m github.com/${{ github.repository }}@${{ github.ref_name }}
