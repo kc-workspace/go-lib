@@ -1,12 +1,16 @@
 package commands
 
 import (
+	"fmt"
+
 	"github.com/kc-workspace/go-lib/commandline/flags"
 	"github.com/kc-workspace/go-lib/mapper"
 )
 
 type Command struct {
 	Name     string
+	Aliases  []string
+	Usage    string
 	Flags    *flags.Manager
 	Executor Executor
 }
@@ -25,4 +29,8 @@ func (c *Command) Start(p *ExecutorParameter) error {
 	}
 
 	return c.Executor(p)
+}
+
+func (c *Command) String() string {
+	return fmt.Sprintf("%s: %s", c.Name, c.Usage)
 }
