@@ -7,6 +7,7 @@ import (
 	"github.com/kc-workspace/go-lib/commandline"
 	"github.com/kc-workspace/go-lib/commandline/models"
 	"github.com/kc-workspace/go-lib/commandline/plugins"
+	"github.com/kc-workspace/go-lib/logger"
 )
 
 func main() {
@@ -16,7 +17,7 @@ func main() {
 		Plugin(plugins.SupportConfig("gol", []string{})).
 		Plugin(plugins.SupportVar()).
 		Plugin(plugins.SupportDotEnv(false)).
-		Plugin(plugins.SupportLogLevel()).
+		Plugin(plugins.SupportLogLevel(logger.WARN)).
 		Start(os.Args)
 
 	if err != nil {
