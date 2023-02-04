@@ -1,6 +1,9 @@
 package configs
 
 import (
+	"errors"
+	"path/filepath"
+
 	"github.com/kc-workspace/go-lib/fs"
 	"github.com/kc-workspace/go-lib/mapper"
 	"github.com/kc-workspace/go-lib/xtemplates"
@@ -14,6 +17,7 @@ func LoadConfigFromFileSystem(input []fs.FileSystem, data mapper.Mapper, strateg
 	}
 
 	for _, file := range files {
+		var ext = filepath.Ext(file.Basename())
 		// read content
 		var content, err = file.Read()
 		if err != nil {
@@ -31,9 +35,19 @@ func LoadConfigFromFileSystem(input []fs.FileSystem, data mapper.Mapper, strateg
 		}
 
 		// convert content to mapper
-		output, err := mapper.FromJson(content)
-		if err != nil {
-			return result, err
+		var output mapper.Mapper
+		if ext == ".yaml" || ext == ".yml" {
+			output, err = mapper.FromYaml(content)
+			if err != nil {
+				return result, err
+			}
+		} else if ext == ".json" || ext == ".json5" {
+			output, err = mapper.FromJson(content)
+			if err != nil {
+				return result, err
+			}
+		} else {
+			return result, errors.New("only yaml,yml,json,json5 are supported to convert")
 		}
 
 		// merge result together

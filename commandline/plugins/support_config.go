@@ -40,7 +40,7 @@ func SupportConfig(defaultPrefix string, defaultConfig []string) Plugin {
 		p.NewFlags(flags.Array{
 			Name:    "configs",
 			Default: defaultConfig,
-			Usage:   "configuration file/directory. both must contains only .json",
+			Usage:   "configuration file/directory. both must be either json or yaml",
 			Action: func(data []string) mapper.Mapper {
 				var result = mapper.New()
 				if len(data) > 0 {
