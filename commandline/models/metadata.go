@@ -12,6 +12,7 @@ type Metadata struct {
 	Commit  string
 	Date    string
 	BuiltBy string
+	Usage   string
 }
 
 func (m *Metadata) String() string {
@@ -25,6 +26,7 @@ func (m *Metadata) ToMapper() mapper.Mapper {
 		"commit":  m.Commit,
 		"date":    m.Date,
 		"buildby": m.BuiltBy,
+		"usage":   m.Usage,
 	}
 }
 
@@ -35,5 +37,6 @@ func EmptyMetadata() *Metadata {
 		Commit:  "",
 		Date:    "",
 		BuiltBy: "",
+		Usage:   "",
 	}
 }
