@@ -48,6 +48,10 @@ func Set(m map[string]interface{}, key string, value interface{}) {
 	}
 }
 
+func Del(m map[string]interface{}, key string) {
+	Set(m, key, nil)
+}
+
 func Copy(m map[string]interface{}) Mapper {
 	var copied = make(Mapper)
 	for k, v := range m {

@@ -329,6 +329,11 @@ func (m Mapper) Set(key string, value interface{}) Mapper {
 	return m
 }
 
+func (m Mapper) Del(key string) Mapper {
+	Del(m, key)
+	return m
+}
+
 // Get value from key (dot-notation key)
 func (m Mapper) Get(key string) (interface{}, error) {
 	return Get(m, key)
