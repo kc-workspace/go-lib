@@ -14,7 +14,7 @@ func main() {
 	var err = commandline.New(&models.Metadata{}).
 		Plugin(plugins.SupportVersion()).
 		Plugin(plugins.SupportHelp()).
-		Plugin(plugins.SupportConfig("gol", []string{})).
+		Plugin(plugins.SupportConfig([]string{})).
 		Plugin(plugins.SupportVar()).
 		Plugin(plugins.SupportDotEnv(false)).
 		Plugin(plugins.SupportLogLevel(logger.WARN)).
