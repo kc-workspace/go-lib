@@ -21,7 +21,7 @@ import (
 // For parameters:
 // defaultPrefix is environment prefix
 // defaultConfig is default configs if no flag provided
-func SupportConfig(defaultPrefix string, defaultConfig []string) Plugin {
+func SupportConfig(defaultConfig []string) Plugin {
 	return func(p *PluginParameter) error {
 		var wd, err = os.Getwd()
 		if err != nil {
@@ -54,9 +54,9 @@ func SupportConfig(defaultPrefix string, defaultConfig []string) Plugin {
 		})
 
 		p.NewHook(hooks.BEFORE_COMMAND, func(config mapper.Mapper) error {
-			var name = p.Metadata.Name
+			var name = p.Metadata.Short
 			if name == "" {
-				name = defaultPrefix
+				name = p.Metadata.Name
 			}
 
 			var addition, err = configs.New(name, config).Build(os.Environ())
@@ -93,9 +93,9 @@ func SupportConfig(defaultPrefix string, defaultConfig []string) Plugin {
 			Executor: func(p *commands.ExecutorParameter) error {
 				var withData = p.Config.Mi("internal").Mi("flag").Bo("data", false)
 				var all = p.Config.Mi("internal").Mi("flag").Bo("all", false)
-				var prefix = p.Meta.Name
+				var prefix = p.Meta.Short
 				if prefix == "" {
-					prefix = defaultPrefix
+					prefix = p.Meta.Name
 				}
 
 				var headers = []string{"Key", "Environment"}
