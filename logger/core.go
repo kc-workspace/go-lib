@@ -1,39 +1,52 @@
 package logger
 
-import "github.com/kc-workspace/go-lib/utils"
+import (
+	"math"
+	"text/tabwriter"
+)
 
-var level Level = INFO
-var printer *Printer = NewDefaultPrinter()
-var storage = make(map[string]*Logger)
-
-func SetLevel[T float32 | float64 | int | Level](l T) {
-	level = ToLevel(l)
-}
-
-func GetLevel() Level {
-	return level
-}
-
-// Get global printer
-func GetPrinter() *Printer {
-	return printer
-}
-
-// Set global printer.
-// this should be run at very first line on main() function
-func SetPrinter(p *Printer) {
-	printer = p
-}
-
-func GetTable(size uint) *Table {
-	return NewDefaultTable(size).Init()
-}
-
-func Get(names ...string) *Logger {
-	name := utils.JoinString(":", names...)
-	if storage[name] == nil {
-		storage[name] = New(name, printer)
+func NewManager(
+	baseNames []string,
+	level Level,
+	printer *Printer,
+) *Manager {
+	return &Manager{
+		names:   baseNames,
+		level:   level,
+		printer: printer,
 	}
-
-	return storage[name]
 }
+
+func NewLogger(names []string, level Level, printer *Printer) *Logger {
+	return &Logger{
+		names:   names,
+		level:   level,
+		printer: printer,
+	}
+}
+
+func NewTable(size uint, level Level, printer *Printer) *Table {
+	var lineSize = len(LINE)
+	var tab = int(float64(lineSize) / float64(size))
+	var min = math.Min(float64(tab), float64(4))
+
+	return &Table{
+		size:    size,
+		level:   level,
+		printer: printer,
+		writer: tabwriter.NewWriter(
+			printer.writer,
+			int(min),
+			tab,
+			2,
+			' ',
+			0,
+		),
+	}
+}
+
+var DefaultManager = NewManager(
+	make([]string, 0),
+	INFO,
+	DefaultPrinter,
+)

@@ -20,12 +20,17 @@ func (p *Printer) Print(message interface{}) {
 	p.Write(p.writer, message)
 }
 
+// Create new printer from io.Writer
 func NewPrinter(writer io.Writer) *Printer {
 	return &Printer{
 		writer: writer,
 	}
 }
 
-func NewDefaultPrinter() *Printer {
-	return NewPrinter(os.Stdout)
+// Default printer when not specify
+var DefaultPrinter = NewPrinter(os.Stdout)
+
+// Override default printer
+func SetPrinter(p *Printer) {
+	DefaultPrinter = p
 }

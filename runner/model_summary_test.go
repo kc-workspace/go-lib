@@ -13,7 +13,7 @@ import (
 
 func ToBuffer(summary *runner.Summary) *bytes.Buffer {
 	var buffer = new(bytes.Buffer)
-	var logger = logger.New("default", logger.NewPrinter(buffer))
+	var logger = logger.NewLogger([]string{"default"}, logger.DEBUG, logger.NewPrinter(buffer))
 	summary.Log(logger)
 
 	return buffer

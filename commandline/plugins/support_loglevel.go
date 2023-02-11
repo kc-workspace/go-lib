@@ -27,7 +27,7 @@ func SupportLogLevel(defaultLevel logger.Level) Plugin {
 			Action: func(data bool) mapper.Mapper {
 				var m = mapper.New()
 				if data {
-					logger.SetLevel(logger.DEBUG) // force if --debug is exist
+					p.Logger.SetLevel(logger.DEBUG) // force if --debug is exist
 					return m.Set("internal.log.level", 4)
 				}
 				return m
@@ -40,7 +40,7 @@ func SupportLogLevel(defaultLevel logger.Level) Plugin {
 				return err
 			}
 
-			logger.SetLevel(level)
+			p.Logger.SetLevel(logger.ToLevel(level))
 			return nil
 		})
 

@@ -2,11 +2,11 @@ package commands
 
 import "github.com/kc-workspace/go-lib/logger"
 
-func New() *Manager {
+func New(l *logger.Logger) *Manager {
 	return &Manager{
 		keys:     make([]string, 0),
 		aliases:  make([]string, 0),
 		commands: make(map[string]*Command),
-		logger:   logger.Get("commandline", "command"),
+		logger:   l.Extend("command"),
 	}
 }

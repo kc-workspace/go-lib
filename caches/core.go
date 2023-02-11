@@ -6,12 +6,12 @@ import (
 	"github.com/kc-workspace/go-lib/logger"
 )
 
-func New() *Service {
+func New(l *logger.Logger) *Service {
 	return &Service{
 		caches: make(map[string]*Data),
 		mutex:  sync.RWMutex{},
-		logger: logger.Get("cache", "service"),
+		logger: l,
 	}
 }
 
-var Global = New()
+var Global = New(logger.DefaultManager.New("caches", "global"))

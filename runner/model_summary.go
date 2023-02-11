@@ -36,7 +36,7 @@ func (s *Summary) Add(informations ...*Information) *Summary {
 }
 
 func (s *Summary) Log(log *logger.Logger) {
-	var table = logger.NewTable(log.GetPrinter(), 4).Init()
+	var table = log.ToTable(4)
 	var status = unknownStatus
 	var success int = 0
 	var total = 0

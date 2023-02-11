@@ -10,7 +10,6 @@ import (
 	"github.com/kc-workspace/go-lib/commandline/flags"
 	"github.com/kc-workspace/go-lib/commandline/hooks"
 	"github.com/kc-workspace/go-lib/configs"
-	"github.com/kc-workspace/go-lib/logger"
 	"github.com/kc-workspace/go-lib/mapper"
 )
 
@@ -59,7 +58,7 @@ func SupportConfig(defaultConfig []string) Plugin {
 				name = p.Metadata.Name
 			}
 
-			var addition, err = configs.New(name, config).Build(os.Environ())
+			var addition, err = configs.New(name, config, p.Logger).Build(os.Environ())
 			if err != nil {
 				return err
 			}
@@ -75,7 +74,7 @@ func SupportConfig(defaultConfig []string) Plugin {
 		p.NewCommand(&commands.Command{
 			Name:  "config",
 			Usage: "list all possible config user can set",
-			Flags: flags.New(flags.Bool{
+			Flags: flags.New(p.Logger, flags.Bool{
 				Name:    "data",
 				Default: false,
 				Usage:   "show config value as well",
@@ -103,7 +102,7 @@ func SupportConfig(defaultConfig []string) Plugin {
 					headers = append(headers, "Type", "Value")
 				}
 
-				var table = logger.GetTable(uint(len(headers)))
+				var table = p.Logger.ToTable(uint(len(headers)))
 				table.Row(headers...)
 
 				var keys = p.Config.Keys()

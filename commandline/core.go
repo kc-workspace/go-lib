@@ -11,16 +11,11 @@ import (
 )
 
 func New(metadata *models.Metadata) *Commandline {
-	return &Commandline{
-		Metadata: metadata,
-		flags:    flags.New(),
-		commands: commands.New(),
-		hooks:    hooks.New(),
-		plugins:  plugins.New(),
-
-		cache:  caches.Global,
-		logger: logger.Get("commandline"),
-	}
+	return NewCustom(
+		metadata,
+		caches.Global,
+		logger.DefaultManager.New("commandline"),
+	)
 }
 
 func NewCustom(
@@ -30,10 +25,10 @@ func NewCustom(
 ) *Commandline {
 	return &Commandline{
 		Metadata: metadata,
-		flags:    flags.New(),
-		commands: commands.New(),
-		hooks:    hooks.New(),
-		plugins:  plugins.New(),
+		flags:    flags.New(logger),
+		commands: commands.New(logger),
+		hooks:    hooks.New(logger),
+		plugins:  plugins.New(logger),
 
 		cache:  cache,
 		logger: logger,

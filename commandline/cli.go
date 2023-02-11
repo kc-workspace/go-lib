@@ -119,7 +119,7 @@ func (c *Commandline) Start(args []string) error {
 		Config: config,
 
 		Cache:  c.cache,
-		Logger: logger.Get("command", cmd.Name),
+		Logger: c.logger.Extend("command", cmd.Name),
 	})
 
 	config.Set("internal.error", cmderr)

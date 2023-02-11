@@ -2,9 +2,9 @@ package plugins
 
 import "github.com/kc-workspace/go-lib/logger"
 
-func New() *Manager {
+func New(l *logger.Logger) *Manager {
 	return &Manager{
 		plugins: make([]Plugin, 0),
-		logger:  logger.Get("commandline", "plugin"),
+		logger:  l.Extend("plugin"),
 	}
 }

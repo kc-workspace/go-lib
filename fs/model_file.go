@@ -20,7 +20,7 @@ type file struct {
 }
 
 func (f *file) Paths() []string {
-	return utils.CloneStringArray(f.paths)
+	return utils.CloneArray(f.paths)
 }
 
 func (f *file) Abs() string {

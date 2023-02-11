@@ -33,7 +33,7 @@ func resolveAutoType(t Type, filepath string) Type {
 		return t
 	}
 
-	var logger = logger.Get("fs", "type", "resolver")
+	var logger = logger.DefaultManager.New("fs", "type", "resolver")
 	var defaultValue = FILE
 	var s, e = os.Stat(filepath)
 	if e != nil {

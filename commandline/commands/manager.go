@@ -48,8 +48,8 @@ func (m *Manager) Get(args []string, config mapper.Mapper) (*Command, []string) 
 		return &Command{
 			Name: DEFAULT,
 			Executor: func(parameters *ExecutorParameter) error {
-				parameters.Logger.ErrorString("You didn't specify command name to run")
-				parameters.Logger.ErrorString("Supported commands: %v", m.keys)
+				parameters.Logger.Errorf("You didn't specify command name to run")
+				parameters.Logger.Errorf("Supported commands: %v", m.keys)
 				return nil
 			},
 		}, parsed

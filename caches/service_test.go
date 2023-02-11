@@ -5,32 +5,39 @@ import (
 	"testing"
 
 	"github.com/kc-workspace/go-lib/caches"
+	"github.com/kc-workspace/go-lib/logger"
 	"github.com/kc-workspace/go-lib/xtests"
+)
+
+var log = logger.NewLogger(
+	[]string{},
+	logger.SILENT,
+	logger.DefaultPrinter,
 )
 
 func TestNewCacheService(t *testing.T) {
 	var assertion = xtests.New(t)
 
 	assertion.NewName("create a cache service").
-		WithActual(caches.New()).
+		WithActual(caches.New(log)).
 		MustNotBeNil()
 
 	assertion.NewName("empty cache size").
 		WithExpected(0).
-		WithActual(caches.New().Size()).
+		WithActual(caches.New(log).Size()).
 		MustEqual()
 
 	assertion.NewName("new != global").
 		WithExpected(caches.Global).
-		WithActual(caches.New()).
+		WithActual(caches.New(log)).
 		MustNotEqual()
 
 	assertion.NewName("to string").
 		WithExpected("{}").
-		WithActual(caches.New().String()).
+		WithActual(caches.New(log).String()).
 		MustEqual()
 
-	var a = caches.New()
+	var a = caches.New(log)
 	var err = a.Set("test", true, caches.Persistent)
 	assertion.NewName("to string").
 		WithExpected(`{"test":{"Data":true}}`).
@@ -42,7 +49,7 @@ func TestNewCacheService(t *testing.T) {
 func TestCacheService(t *testing.T) {
 	var assertion = xtests.New(t)
 
-	var a = caches.New()
+	var a = caches.New(log)
 	var err = a.Set("hello", "world", "1s")
 
 	assertion.NewName("get size").

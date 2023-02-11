@@ -2,7 +2,7 @@ package flags
 
 import "github.com/kc-workspace/go-lib/logger"
 
-func New(flags ...Flag) *Manager {
+func New(l *logger.Logger, flags ...Flag) *Manager {
 	var keys = make([]string, 0)
 	var m = make(map[string]Flag)
 	for _, flag := range flags {
@@ -14,6 +14,6 @@ func New(flags ...Flag) *Manager {
 		keys:  keys,
 		flags: m,
 
-		logger: logger.Get("commandline", "flag"),
+		logger: l.Extend("flag"),
 	}
 }

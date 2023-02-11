@@ -13,7 +13,7 @@ var avoid = []string{"$schema", "#comment#"}
 // Merge will merge 'a' and 'b'. with optional strategy mapper
 // a will be modifiy to be the result
 func Merge(a, b map[string]interface{}, strategy Mapper) map[string]interface{} {
-	var log = logger.Get("map", "merger")
+	var log = logger.DefaultManager.New("map", "merger")
 
 	// merge data
 	for key, value := range b {

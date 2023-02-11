@@ -29,6 +29,6 @@ func (c *Context) Output() interface{} {
 func NewContext(name string) *Context {
 	return &Context{
 		Disabled: false,
-		Logger:   logger.Get("runner", name),
+		Logger:   logger.DefaultManager.New("runner", name),
 	}
 }

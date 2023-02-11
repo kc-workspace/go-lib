@@ -4,21 +4,14 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/kc-workspace/go-lib/utils"
 )
 
-// Logger is printable object where it has level and format of the output
-// Normally, you going to use this kind of output for enduser to understand what happen
 type Logger struct {
-	Name    string
+	names   []string
+	level   Level
 	printer *Printer
-}
-
-func (l *Logger) IsPrintable(lvl Level) bool {
-	return level >= lvl
-}
-
-func (l *Logger) GetPrinter() *Printer {
-	return l.printer
 }
 
 func (l *Logger) format(lvl, format string, msg ...interface{}) string {
@@ -27,45 +20,86 @@ func (l *Logger) format(lvl, format string, msg ...interface{}) string {
 
 	var arr = make([]interface{}, 3)
 	arr[0] = datetime
-	arr[1] = l.Name
+	arr[1] = GetName(l.names)
 	arr[2] = strings.ToUpper(lvl)
 	arr = append(arr, msg...)
 
 	return fmt.Sprintf("%s %-20s [%-5s] | "+format, arr...)
 }
 
+func (l *Logger) valid(lvl Level) bool {
+	return l.level >= lvl
+}
+
+func (l *Logger) SetLevel(lvl Level) *Logger {
+	l.level = lvl
+	return l
+}
+
+func (l *Logger) IsDebug() bool {
+	return l.valid(DEBUG)
+}
+
 func (l *Logger) Debug(format string, msg ...interface{}) {
-	if l.IsPrintable(DEBUG) {
+	if l.IsDebug() {
 		l.printer.Print(l.format("debug", format, msg...))
 	}
 }
 
+func (l *Logger) IsInfo() bool {
+	return l.valid(INFO)
+}
+
 func (l *Logger) Info(format string, msg ...interface{}) {
-	if l.IsPrintable(INFO) {
+	if l.IsInfo() {
 		l.printer.Print(l.format("info", format, msg...))
 	}
 }
 
-func (l *Logger) Warn(format string, msg ...interface{}) {
-	if l.IsPrintable(WARN) {
+func (l *Logger) IsWarn() bool {
+	return l.valid(WARN)
+}
+
+func (l *Logger) Warnf(format string, msg ...interface{}) {
+	if l.IsWarn() {
 		l.printer.Print(l.format("warn", format, msg...))
 	}
 }
 
-func (l *Logger) ErrorString(format string, msg ...interface{}) {
-	if l.IsPrintable(ERROR) {
-		l.printer.Print(l.format("error", format, msg...))
+func (l *Logger) Warn(err error) {
+	if err != nil {
+		l.Warnf(err.Error())
+	}
+}
+
+func (l *Logger) IsError() bool {
+	return l.valid(ERROR)
+}
+
+func (l *Logger) Errorf(format string, msg ...interface{}) {
+	if l.IsError() {
+		l.printer.Print(l.format("warn", format, msg...))
 	}
 }
 
 func (l *Logger) Error(err error) {
 	if err != nil {
-		l.ErrorString(err.Error())
+		l.Errorf(err.Error())
+	}
+}
+
+func (l *Logger) Panicf(format string, msg ...interface{}) {
+	panic(l.format("panic", format, msg...))
+}
+
+func (l *Logger) Panic(err error) {
+	if err != nil {
+		l.Panicf(err.Error())
 	}
 }
 
 func (l *Logger) Log(format string, msg ...interface{}) {
-	if level != SILENT {
+	if l.level != SILENT {
 		l.printer.Print(fmt.Sprintf(format, msg...))
 	}
 }
@@ -78,9 +112,18 @@ func (l *Logger) NewLine() {
 	l.Log(EMPTY)
 }
 
-func New(name string, printer *Printer) *Logger {
+func (l *Logger) New(names ...string) *Logger {
 	return &Logger{
-		Name:    name,
-		printer: printer,
+		names:   names,
+		level:   l.level,
+		printer: l.printer,
 	}
+}
+
+func (l *Logger) Extend(names ...string) *Logger {
+	return l.New(utils.CloneArray(l.names, names...)...)
+}
+
+func (l *Logger) ToTable(size uint) *Table {
+	return NewTable(size, l.level, l.printer)
 }

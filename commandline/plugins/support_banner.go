@@ -2,7 +2,6 @@ package plugins
 
 import (
 	"github.com/kc-workspace/go-lib/commandline/hooks"
-	"github.com/kc-workspace/go-lib/logger"
 	"github.com/kc-workspace/go-lib/mapper"
 )
 
@@ -10,13 +9,13 @@ import (
 func SupportBanner() Plugin {
 	return func(p *PluginParameter) error {
 		p.NewHook(hooks.BEFORE_COMMAND, func(m mapper.Mapper) error {
-			if logger.GetLevel() == logger.DEBUG {
+			if p.Logger.IsDebug() {
 				p.Logger.Debug("%-12s: %s", "metadata", p.Metadata.String())
 				p.Logger.Debug("%-12s: %v", "config", m.String())
 
 				return nil
 			} else {
-				var table = logger.GetTable(2)
+				var table = p.Logger.ToTable(3)
 				return table.
 					Row("Name", "Version", "Commit").
 					Row(p.Metadata.Name, p.Metadata.Version, p.Metadata.Commit).

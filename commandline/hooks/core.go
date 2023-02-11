@@ -2,9 +2,9 @@ package hooks
 
 import "github.com/kc-workspace/go-lib/logger"
 
-func New() *Manager {
+func New(l *logger.Logger) *Manager {
 	return &Manager{
 		hooks:  make(map[Type][]Hook),
-		logger: logger.Get("commandline", "hooks"),
+		logger: l.Extend("hooks"),
 	}
 }
