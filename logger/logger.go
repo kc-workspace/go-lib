@@ -28,7 +28,7 @@ func (l *Logger) format(lvl, format string, msg ...interface{}) string {
 }
 
 func (l *Logger) valid(lvl Level) bool {
-	return l.level >= lvl
+	return ShouldPrint(l.level, lvl)
 }
 
 func (l *Logger) SetLevel(lvl Level) *Logger {

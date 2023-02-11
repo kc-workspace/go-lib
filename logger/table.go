@@ -27,13 +27,18 @@ func (t *Table) ToMsg(msg ...string) string {
 }
 
 func (t *Table) Row(msg ...string) *Table {
-	t.printer.Write(t.writer, t.ToMsg(msg...))
+	if t.level != SILENT {
+		t.printer.Write(t.writer, t.ToMsg(msg...))
+	}
 
 	return t
 }
 
 func (t *Table) End() error {
-	return t.writer.Flush()
+	if t.level != SILENT {
+		return t.writer.Flush()
+	}
+	return nil
 }
 
 func (l *Table) ToLogger(names ...string) *Logger {
