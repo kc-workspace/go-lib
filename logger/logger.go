@@ -78,7 +78,7 @@ func (l *Logger) IsError() bool {
 
 func (l *Logger) Errorf(format string, msg ...interface{}) {
 	if l.IsError() {
-		l.printer.Print(l.format("warn", format, msg...))
+		l.printer.Print(l.format("error", format, msg...))
 	}
 }
 
