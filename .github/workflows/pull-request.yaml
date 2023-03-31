@@ -55,7 +55,15 @@ jobs:
       - name: Linting
         uses: golangci/golangci-lint-action@v3
         with:
-          args: -v --fix ${{ needs.info.outputs.modules }}
+          ## Output never works because golangci override the configuration
+          ## workaround: https://github.com/golangci/golangci-lint-action/issues/119#issuecomment-981090648
+          ## issue: https://github.com/golangci/golangci-lint-action/issues/458
+          ## reference: https://github.com/golangci/golangci-lint-action/blob/e1c0a0543ff3084b0730d8b0570e39c1416f6bc9/src/run.ts#L130-L133
+          args: >
+            --out-${NO_FUTURE}format
+            checkstyle:reports/checkstyle.xml,colored-line-number
+            --fix
+            ${{ needs.info.outputs.modules }}
       - name: Testing
         run: ./scripts/main.sh test
       - name: Debugging

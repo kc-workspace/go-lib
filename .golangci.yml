@@ -4,7 +4,7 @@ run:
   timeout: 1m
 
 output:
-  format: checkstyle:reports/checkstyle.xml,colored-line-number
+  format: colored-line-number
 
 linters:
   presets:
