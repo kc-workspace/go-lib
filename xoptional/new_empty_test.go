@@ -1,20 +1,19 @@
 package xoptional_test
 
 import (
+	"github.com/kc-workspace/go-lib/xoptional"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-
-	"github.com/kc-workspace/go-lib/xoptional"
 )
 
 var _ = Describe("Empty function", func() {
-	var optional = xoptional.Empty[string]()
+	optional := xoptional.Empty[string]()
 
 	It("should return true on Empty() method", func() {
-		Expect(optional.Empty()).To(Equal(true))
+		Expect(optional.Empty()).To(BeTrue())
 	})
 	It("should return false on Present() method", func() {
-		Expect(optional.Present()).To(Equal(false))
+		Expect(optional.Present()).To(BeFalse())
 	})
 
 	It("should panic when try to Get()", func() {
