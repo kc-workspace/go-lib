@@ -20,6 +20,15 @@ linters:
     - sql
     - style
     - test
+  disable:
+    - ireturn
+
+linters-settings:
+  exhaustruct:
+    exclude:
+      - ".*_test"
+  paralleltest:
+    ignore-missing: true
 
 issues:
   max-issues-per-linter: 50
