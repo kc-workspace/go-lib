@@ -58,6 +58,8 @@ jobs:
           args: --fix ${{ needs.info.outputs.modules }}
       - name: Testing
         run: ./scripts/main.sh test
+      - name: Debugging
+        run: ls -la ./reports
       - name: Scaning
         uses: SonarSource/sonarcloud-github-action@master
         env:
