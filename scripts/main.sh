@@ -49,6 +49,9 @@ _cmd() {
     printf "[DRYRN] %s\n" "$*" >&2
     return 0
   fi
+  if test -n "$CI"; then
+    printf "[DEBUG] %s\n" "$*"
+  fi
 
   "$@"
 }

@@ -22,7 +22,8 @@ main() {
     "--junit-report=test-results.xml"
   )
 
-  if test -n "$COVER"; then
+  if test -n "$COVER" ||
+    test -n "$CI"; then
     args+=(
       "--cover"
       "--coverprofile=coverage.out"
