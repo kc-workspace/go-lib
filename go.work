@@ -1,20 +1,6 @@
-go 1.19
+go 1.20
 
 use (
-	./caches
-	./commandline
-	./configs
-	./datatype
-	./dotenv
-	./fs
-	./logger
-	./mapper
-	./random
-	./runner
-	./scheduler
-	./usage
-	./utils
-	./xerrors
-	./xtemplates
-	./xtests
+	./xoptional
+	./xrandom
 )
