@@ -14,5 +14,6 @@ func Next[T, N any](t *Optional[T], fn func(t T) *N) *Optional[N] {
 	if t.Empty() {
 		return Empty[N]()
 	}
+
 	return New(fn(t.Get()))
 }

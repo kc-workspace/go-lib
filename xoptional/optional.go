@@ -28,6 +28,7 @@ func (o *Optional[V]) Or(fn func() V) V {
 	if o.value == nil {
 		return fn()
 	}
+
 	return *o.value
 }
 
