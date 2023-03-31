@@ -1,0 +1,26 @@
+## https://golangci-lint.run/usage/configuration/
+
+run:
+  timeout: 1m
+
+output:
+  format: checkstyle:reports/checkstyle.xml,colored-line-number
+
+linters:
+  presets:
+    - bugs
+    - comment
+    - complexity
+    - error
+    - format
+    - import
+    - metalinter
+    - module
+    - performance
+    - sql
+    - style
+    - test
+
+issues:
+  max-issues-per-linter: 50
+  max-same-issues: 10
