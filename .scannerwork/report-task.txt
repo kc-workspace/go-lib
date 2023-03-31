@@ -3,5 +3,5 @@ projectKey=kc-workspace_go-lib
 serverUrl=https://sonarcloud.io
 serverVersion=8.0.0.39607
 dashboardUrl=https://sonarcloud.io/dashboard?id=kc-workspace_go-lib&branch=main
-ceTaskId=AYc4fFxIOyLqpQ9toT4I
-ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AYc4fFxIOyLqpQ9toT4I
+ceTaskId=AYc4g_f6lCVv-QQLEE5w
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AYc4g_f6lCVv-QQLEE5w
