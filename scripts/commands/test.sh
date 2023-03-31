@@ -18,8 +18,8 @@ main() {
   args+=("--keep-going" "--race" "--vet=")
   args+=(
     "--output-dir=reports"
-    "--json-report=report.json"
-    "--junit-report=report.xml"
+    "--json-report=test-results.json"
+    "--junit-report=test-results.xml"
   )
 
   if test -n "$COVER"; then

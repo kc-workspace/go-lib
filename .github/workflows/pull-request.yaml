@@ -16,51 +16,59 @@ concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  GO_PACKAGE_NAME: "github.com/kc-workspace/go-lib"
-  COVERAGE_THRESHOLD: 50
+permissions:
+  contents: write
+  packages: write
+  pull-requests: write
+  issues: write
 
 jobs:
-  linting:
+  info:
     runs-on: ubuntu-latest
+    outputs:
+      modules: ${{ steps.modules.outputs.names }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup golang
         uses: actions/setup-go@v3
         with:
-          go-version-file: 'go.work'
-      - id: module
-        name: Get modules from go workspace
-        run: |
-          printf "names=" >> "$GITHUB_OUTPUT"
-          go work edit -json | jq -c -r '[.Use[].DiskPath] | map_values(. + "/...")[]' | tr '\n' ' ' >> "$GITHUB_OUTPUT"
-          echo >> "$GITHUB_OUTPUT"
-          cat "$GITHUB_OUTPUT"
-      - name: Linting with golangci
-        uses: golangci/golangci-lint-action@v3
-        with:
-          args: ${{ steps.module.outputs.names }}
+          go-version-file: "go.work"
+      - id: modules
+        name: Get modules path
+        run: ./scripts/main.sh modules name
   testing:
     runs-on: ubuntu-latest
+    needs:
+      - info
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Setup golang
         uses: actions/setup-go@v3
         with:
-          go-version-file: 'go.work'
+          go-version-file: "go.work"
       - name: Building
-        run: |
-          go build ${{ env.GO_PACKAGE_NAME }}/...
+        run: ./scripts/main.sh build
+      - name: Linting
+        uses: golangci/golangci-lint-action@v3
+        with:
+          args: --fix ${{ needs.info.outputs.modules }}
       - name: Testing
+        run: ./scripts/main.sh test
+      - name: Scaning
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Pushing back
         run: |
-          go test -coverprofile=./coverage.out ${{ env.GO_PACKAGE_NAME }}/...
-          go tool cover -func coverage.out
-      - name: Coverage
-        run: |
-          coverage="$(go tool cover -func coverage.out | grep -Eo "[0-9.]+" | tail -n 1)"
-          rounded="$(printf "%.0f" "$coverage")"
-          if [[ "$rounded" -lt "${{ env.COVERAGE_THRESHOLD }}" ]]; then
-            exit 1
+          if ! git diff --quiet --exit-code; then
+            git config user.name github-actions
+            git config user.email actions@github.com
+            git add --all
+            git commit -m "chore: formatting code [skip ci]"
+            git push
           fi
