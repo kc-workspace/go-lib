@@ -37,7 +37,7 @@
 <h3 align="center">
   <a href="https://sonarcloud.io/project/overview?id=kc-workspace_go-lib">SONARCLOUD</a>
   <span> · </span>
-  <a href="https://pkg.go.dev/search?q=kc-workspace%2Fgo-lib">GO-PKG</a>
+  <a href="https://pkg.go.dev/search?q=kc-workspace%2Fgo-lib">PKG</a>
 </h3>
 
 ## Prerequisite
@@ -60,3 +60,7 @@ Below is a list of command you usually use to develop this repository.
 `./scripts.sh build`: To build libraries for any compile errors.
 Usually you don't need this as this repository contains only libraries,
 so build will not compile to binary file.
+
+### License
+
+[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B7211%2Fgithub.com%2Fkc-workspace%2Fgo-lib.svg?type=large)](https://app.fossa.com/projects/custom%2B7211%2Fgithub.com%2Fkc-workspace%2Fgo-lib?ref=badge_large)
