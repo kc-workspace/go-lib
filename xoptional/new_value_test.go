@@ -8,8 +8,8 @@ import (
 
 var _ = Describe("Optional.New", func() {
 	Context("String", func() {
-		var value = "test"
-		var optional = xoptional.New(&value)
+		value := "test"
+		optional := xoptional.New(&value)
 
 		It("should return false on Empty() method", func() {
 			Expect(optional.Empty()).To(BeFalse())
