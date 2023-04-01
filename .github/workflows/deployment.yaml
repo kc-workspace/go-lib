@@ -1,9 +1,11 @@
-name: GoReleaser
+name: Deployment
 
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: release version (e.g. v1.0.0)
+        required: true
 
 defaults:
   run:
@@ -11,8 +13,6 @@ defaults:
 
 permissions:
   contents: write
-  packages: write
-  deployments: write
 
 concurrency:
   group: ${{ github.ref }}
@@ -25,20 +25,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
-      - name: Setup golang
-        uses: actions/setup-go@v3
-        with:
-          go-version-file: 'go.work'
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v4
-        with:
-          distribution: goreleaser
-          version: latest
-          args: release --clean
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Update go-proxy index
-        run: go list -m 'github.com/${{ github.repository }}@${{ github.ref_name }}'
-        env:
-          GO_PROXY: proxy.golang.org
+          ref: main
+      - run: |
+          git tag "${{ inputs.version }}" --message ""
+          git push --tags
