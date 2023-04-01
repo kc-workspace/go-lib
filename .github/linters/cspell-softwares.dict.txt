@@ -1,0 +1,4 @@
+mergify
+onsi
+golangci
+gomega
