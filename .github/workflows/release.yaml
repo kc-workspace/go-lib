@@ -1,3 +1,4 @@
+---
 name: Releaser
 
 on:
@@ -39,6 +40,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Update go-proxy index
-        run: go list -m 'github.com/${{ github.repository }}@${{ github.ref_name }}'
+        run: >
+          go list -m
+            'github.com/${{ github.repository }}@${{ github.ref_name }}'
         env:
           GO_PROXY: proxy.golang.org
