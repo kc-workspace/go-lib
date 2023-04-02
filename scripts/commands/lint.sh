@@ -23,10 +23,10 @@ main() {
 
     # shellcheck disable=2046
     "$cmd" run "${args[@]}" $("$__SCRIPT/main.sh" modules name)
+  else
+    _throw 2 "cannot found commandline: %s" \
+      "$cmd"
   fi
-
-  _throw 2 "cannot found commandline: %s" \
-    "$cmd"
 }
 
 main "$@"
