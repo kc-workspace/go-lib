@@ -3,8 +3,8 @@ package xoptional_test
 import (
 	"testing"
 
-	ginkgo "github.com/onsi/ginkgo/v2"
-	gomega "github.com/onsi/gomega"
+	"github.com/onsi/ginkgo/v2"
+	"github.com/onsi/gomega"
 )
 
 type MockObj struct {
