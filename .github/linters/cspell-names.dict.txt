@@ -6,3 +6,6 @@ kc-workspace
 kc-workspaces
 xrandom
 xoptional
+xcache
+cdata
+csetting
