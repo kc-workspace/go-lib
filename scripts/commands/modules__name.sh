@@ -15,18 +15,16 @@ __is_github() {
 }
 
 main() {
-  local modules=()
-  while IFS= read -r line; do
-    modules+=("$line")
-  done < <(go list -f '{{.Dir}}' -m)
-
   if __is_github; then
+    local modules=()
+    while IFS= read -r line; do
+      modules+=("$line")
+    done < <(go list -f '{{.Dir}}' -m)
+
     printf "%s=%s\n" "names" "${modules[*]}"
   else
-    printf "%s\n" "${modules[*]}"
+    go list -f '{{.Dir}}' -m
   fi
-
-  return 0
 }
 
 if __is_github; then
