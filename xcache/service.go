@@ -16,6 +16,7 @@ func (s Service[T]) Size() int {
 
 func (s Service[T]) Has(key string) bool {
 	_, ok := s.values[key]
+
 	return ok
 }
 
@@ -27,10 +28,12 @@ func (s Service[T]) SetData(key string, data cdata.BaseData[T]) bool {
 	if s.Has(key) {
 		return false
 	}
+
 	if s.setting.AutoUpdate && !data.Update() {
 		return false
 	}
 
 	s.values[key] = data
+
 	return true
 }

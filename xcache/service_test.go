@@ -20,7 +20,7 @@ import (
 
 var _ = Describe("Service", func() {
 	It("create new", func() {
-		var service = xcache.New[string](csetting.Setting{
+		service := xcache.New[string](csetting.Setting{
 			AutoUpdate: false,
 		})
 
