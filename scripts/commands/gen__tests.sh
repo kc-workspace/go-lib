@@ -11,12 +11,8 @@
 ## - _cmd echo "test"
 
 main() {
-  local name="$1"
-
-  test -z "$name" && _throw 2 "%s argument is required" "name"
-
   _cmd go run github.com/onsi/ginkgo/v2/ginkgo \
-    generate "$name"
+    bootstrap --nodot
 }
 
 main "$@"
