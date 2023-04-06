@@ -14,46 +14,10 @@ import (
 func StringError(input any) (string, error) {
 	return underlayString(
 		input,
-		func(
-			value reflect.Value,
-			kind reflect.Kind,
-		) (result string, err error, accept bool) {
-			switch kind {
-			case reflect.Pointer:
-				result, err = StringError(value.Elem().Interface())
-				accept = true
-			}
-
-			return
-		}, func(
-			value reflect.Value,
-			kind reflect.Kind,
-		) (result string, err error, accept bool) {
-			switch kind {
-			case reflect.Slice,
-				reflect.Array:
-				var stringArray = make([]string, 0)
-				var len = value.Cap()
-
-				for i := 0; i < len; i++ {
-					var internal, internalError = StringError(value.Index(i).Interface())
-					// Force return error if
-					// any array element cannot convert to string
-					if internalError != nil {
-						err = internalError
-						accept = true
-						return
-					}
-
-					stringArray = append(stringArray, internal)
-				}
-
-				result = fmt.Sprintf("[%s]", strings.Join(stringArray, ","))
-				accept = true
-			}
-
-			return
-		})
+		func(value interface{}) (string, error) {
+			return StringError(value)
+		},
+	)
 }
 
 // String will try to convert input to string with flag
@@ -81,64 +45,28 @@ func StringDefault(input any, def string) string {
 func StringForce(input any) (result string) {
 	result, _ = underlayString(
 		input,
-		func(
-			value reflect.Value,
-			kind reflect.Kind,
-		) (result string, err error, accept bool) {
-			switch kind {
-			case reflect.Pointer:
-				result = StringForce(value.Elem().Interface())
-				accept = true
-			}
-
-			return
-		}, func(
-			value reflect.Value,
-			kind reflect.Kind,
-		) (result string, err error, accept bool) {
-			switch kind {
-			case reflect.Slice,
-				reflect.Array:
-				var stringArray = make([]string, 0)
-				var len = value.Cap()
-
-				for i := 0; i < len; i++ {
-					var internal = StringForce(value.Index(i).Interface())
-					stringArray = append(stringArray, internal)
-				}
-
-				result = fmt.Sprintf("[%s]", strings.Join(stringArray, ","))
-				accept = true
-			}
-
-			return
-		})
+		func(value interface{}) (string, error) {
+			return StringForce(input), nil
+		},
+	)
 
 	return
 }
 
 type underlayCallback func(
-	value reflect.Value,
-	kind reflect.Kind,
-) (result string, err error, accept bool)
+	value interface{},
+) (result string, err error)
 
 func underlayString(
 	input any,
-	before underlayCallback,
-	after underlayCallback,
+	recurCB underlayCallback,
 ) (result string, err error) {
-	var accept bool
 	var value = reflect.ValueOf(input)
 	var kind = value.Kind()
 
-	result, err, accept = before(value, kind)
-	if accept {
-		return result, err
-	}
-
-	// Reset error to nil
-	err = nil
 	switch kind {
+	case reflect.Pointer:
+		result, err = recurCB(value.Elem().Interface())
 	case reflect.String:
 		result = value.String()
 	case reflect.Bool:
@@ -178,14 +106,24 @@ func underlayString(
 		} else {
 			err = inErr
 		}
-	default:
-		result, err, accept = after(value, kind)
-		if accept {
-			return result, err
-		} else {
-			result = ""
-			err = dterrors.NewConvertFailError(input, "string")
+	case reflect.Slice,
+		reflect.Array:
+		var stringArray = make([]string, 0)
+		var len = value.Cap()
+
+		for i := 0; i < len; i++ {
+			var internal string
+			internal, err = recurCB(value.Index(i).Interface())
+			if err != nil {
+				return
+			}
+
+			stringArray = append(stringArray, internal)
 		}
+
+		result = fmt.Sprintf("[%s]", strings.Join(stringArray, ","))
+	default:
+		err = dterrors.NewConvertFailError(input, "string")
 	}
 
 	return
