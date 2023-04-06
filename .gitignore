@@ -249,5 +249,5 @@ $RECYCLE.BIN/
 
 .old
 reports/**
-**/reports/**
+**/reports
 !reports/.gitkeep

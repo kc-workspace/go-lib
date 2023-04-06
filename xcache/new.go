@@ -11,3 +11,10 @@ func New[T any](setting csetting.Setting) Service[T] {
 		setting: setting,
 	}
 }
+
+func NewAny(setting csetting.Setting) Service[any] {
+	return Service[any]{
+		values:  make(map[string]cdata.BaseData[any]),
+		setting: setting,
+	}
+}

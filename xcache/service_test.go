@@ -30,5 +30,10 @@ var _ = Describe("Service", func() {
 	})
 
 	It("create new", func() {
+		service := xcache.NewAny(csetting.Setting{
+			AutoUpdate: true,
+		})
+
+		Expect(service.Has("test")).To(BeFalse())
 	})
 })

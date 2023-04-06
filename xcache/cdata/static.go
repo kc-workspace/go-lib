@@ -37,6 +37,10 @@ func (d *StaticData[T]) Update() bool {
 	return true
 }
 
+func (d *StaticData[T]) IsEmpty() bool {
+	return false
+}
+
 func (d *StaticData[T]) Del() bool {
 	d.deleteAt = time.Now()
 	return true

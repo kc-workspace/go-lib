@@ -15,6 +15,9 @@ type BaseData[T any] interface {
 	// Del data will mark data as deleted (w/o actual removed)
 	// this will also cause Update() to do nothing
 	Del() bool
+	// IsEmpty return true if data is empty
+	// this only return true on EmptyData
+	IsEmpty() bool
 	// IsDel return true if data soft deleted
 	IsDel() bool
 	// IsErr return true if current data contains error

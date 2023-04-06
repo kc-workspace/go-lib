@@ -47,6 +47,10 @@ func (d *DynamicData[T]) Update() bool {
 	return true
 }
 
+func (d *DynamicData[T]) IsEmpty() bool {
+	return false
+}
+
 func (d *DynamicData[T]) Del() bool {
 	d.deleteAt = time.Now()
 	return true

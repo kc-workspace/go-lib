@@ -37,3 +37,16 @@ func (s Service[T]) SetData(key string, data cdata.BaseData[T]) bool {
 
 	return true
 }
+
+func (s Service[T]) Get(key string) (*T, error) {
+	//nolint:wrapcheck
+	return s.GetData(key).Get()
+}
+
+func (s Service[T]) GetData(key string) cdata.BaseData[T] {
+	if !s.Has(key) {
+		return cdata.NewEmpty[T](key)
+	}
+
+	return s.values[key]
+}

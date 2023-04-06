@@ -2,6 +2,12 @@ package cdata
 
 import "time"
 
+func NewEmpty[T any](key string) BaseData[T] {
+	return &EmptyData[T]{
+		key: key,
+	}
+}
+
 func NewStatic[T any](key string, value T) BaseData[T] {
 	return NewStaticExp(key, value, -1)
 }
