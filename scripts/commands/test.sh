@@ -12,10 +12,10 @@
 
 main() {
   local is_coverage="${COVER:-$CI}"
-  local is_coverage_report="${REPORT}"
-  local is_dryrun="$DRY"
-  local is_debug="$DEBUG"
-  local is_ci="$CI"
+  local is_coverage_report="${REPORT:-}"
+  local is_dryrun="${DRY:-}"
+  local is_debug="${DEBUG:-}"
+  local is_ci="${CI:-}"
 
   local args=("-r")
 
@@ -34,6 +34,12 @@ main() {
 
   if test -n "$is_debug"; then
     args+=("-vv" "--trace")
+    args+=(
+      "--cpuprofile=cpu.prof"
+      "--memprofile=mem.prof"
+      "--blockprofile=block.prof"
+      "--mutexprofile=mutex.prof"
+    )
   fi
 
   if test -n "$is_ci"; then
