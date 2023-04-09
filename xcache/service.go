@@ -2,6 +2,7 @@ package xcache
 
 import (
 	"github.com/kc-workspace/go-lib/xcache/cdata"
+	"github.com/kc-workspace/go-lib/xcache/cerrors"
 	"github.com/kc-workspace/go-lib/xcache/csetting"
 )
 
@@ -20,22 +21,23 @@ func (s Service[T]) Has(key string) bool {
 	return ok
 }
 
-func (s Service[T]) Set(key string, value T) bool {
-	return s.SetData(key, cdata.NewStatic(key, value))
+func (s Service[T]) Set(key string, value T) error {
+	return s.SetData(cdata.NewStatic(key, value))
 }
 
-func (s Service[T]) SetData(key string, data cdata.BaseData[T]) bool {
+func (s Service[T]) SetData(data cdata.BaseData[T]) error {
+	var key = data.Key()
+
 	if s.Has(key) {
-		return false
+		return cerrors.NewRequireForceError("create", key)
 	}
 
 	if s.setting.AutoUpdate && !data.Update() {
-		return false
+		return cerrors.NewUpdateFailError(key)
 	}
 
 	s.values[key] = data
-
-	return true
+	return nil
 }
 
 func (s Service[T]) Get(key string) (*T, error) {

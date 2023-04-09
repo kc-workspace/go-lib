@@ -2,6 +2,7 @@ package xcache_test
 
 import (
 	"github.com/kc-workspace/go-lib/xcache"
+	"github.com/kc-workspace/go-lib/xcache/cdata"
 	"github.com/kc-workspace/go-lib/xcache/csetting"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -19,21 +20,39 @@ import (
 // service.Remove("<key>")                  // -> boolean
 
 var _ = Describe("Service", func() {
-	It("create new", func() {
-		service := xcache.New[string](csetting.Setting{
-			AutoUpdate: false,
+	Describe("Typed", func() {
+		It("New", func() {
+			service := xcache.New[string](csetting.Setting{
+				AutoUpdate: false,
+			})
+
+			Expect(service).NotTo(BeNil())
+			Expect(service.Size()).To(Equal(0))
+			Expect(service.Has("invalid")).To(BeFalse())
+			Expect(service.Get("invalid")).Error().
+				Should(HaveOccurred())
 		})
 
-		Expect(service).NotTo(BeNil())
-		Expect(service.Size()).To(Equal(0))
-		Expect(service.Has("invalid")).To(BeFalse())
-	})
+		It("Static Set", func() {
+			service := xcache.New[string](csetting.Setting{
+				AutoUpdate: false,
+			})
 
-	It("create new", func() {
-		service := xcache.NewAny(csetting.Setting{
-			AutoUpdate: true,
+			Expect(service.Set("test", "string")).To(Succeed())
+			Expect(service.Size()).To(Equal(1))
+			Expect(service.Get("test")).To(HaveValue(Equal("string")))
 		})
 
-		Expect(service.Has("test")).To(BeFalse())
+		It("Data Set", func() {
+			service := xcache.New[string](csetting.Setting{
+				AutoUpdate: false,
+			})
+
+			Expect(service.SetData(cdata.NewStatic("test", "string"))).
+				To(Succeed())
+
+			Expect(service.Size()).To(Equal(1))
+			Expect(service.Get("test")).To(HaveValue(Equal("string")))
+		})
 	})
 })

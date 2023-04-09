@@ -24,5 +24,5 @@ type NoItemError struct {
 }
 
 func (e *NoItemError) Error() string {
-	return fmt.Sprintf("No item found on key '%s'", e.key)
+	return fmt.Sprintf("No item found on data key '%s'", e.key)
 }
