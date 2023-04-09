@@ -3,5 +3,8 @@ go 1.20
 use (
 	./xcache
 	./xdatatype
+	./xerror
+	./xmap
 	./xoptional
+	./xutils
 )
