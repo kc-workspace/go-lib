@@ -85,7 +85,7 @@ jobs:
           go-version-file: "go.work"
       - name: Building
         run: ./scripts/main.sh build
-      - name: SuperLinting
+      - name: Linting All
         # https://github.com/github/super-linter#slim-image
         uses: github/super-linter/slim@v4
         env:
@@ -94,8 +94,11 @@ jobs:
           IGNORE_GITIGNORED_FILES: true
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_JSCPD_ALL_CODEBASE: true
+          ## Disabled golang because default
+          ## golangci-lint not support go workspace
+          ## project layout
           VALIDATE_GO: false
-      - name: Linting
+      - name: Linting Go
         uses: golangci/golangci-lint-action@v3
         with:
           ## Output never works because golangci override the configuration

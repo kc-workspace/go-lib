@@ -22,6 +22,7 @@ linters:
     - test
   disable:
     - ireturn
+    - gochecknoglobals
 
 linters-settings:
   exhaustruct:
@@ -29,7 +30,15 @@ linters-settings:
       - ".*_test"
   paralleltest:
     ignore-missing: true
-
+  wrapcheck:
+    ignoreSigRegexps:
+      - \.New.*Error\(
+  godox:
+    keywords:
+      - TODO
+      - FIXME
+      - HACK
+      - OPTIMIZE
 issues:
   max-issues-per-linter: 50
   max-same-issues: 10

@@ -5,5 +5,7 @@ import (
 	"github.com/kc-workspace/go-lib/xdatatype/dtconverter"
 )
 
-var StringChecker = dtchecker.NewString()
-var StringConverter = dtconverter.NewString()
+var (
+	StringChecker   = dtchecker.NewString()
+	StringConverter = dtconverter.NewString()
+)

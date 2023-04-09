@@ -26,7 +26,7 @@ func (s Service[T]) Set(key string, value T) error {
 }
 
 func (s Service[T]) SetData(data cdata.BaseData[T]) error {
-	var key = data.Key()
+	key := data.Key()
 
 	if s.Has(key) {
 		return cerrors.NewRequireForceError("create", key)
@@ -37,6 +37,7 @@ func (s Service[T]) SetData(data cdata.BaseData[T]) error {
 	}
 
 	s.values[key] = data
+
 	return nil
 }
 
