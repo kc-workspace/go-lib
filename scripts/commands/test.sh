@@ -11,6 +11,12 @@
 ## - _cmd echo "test"
 
 main() {
+  local is_coverage="${COVER:-$CI}"
+  local is_coverage_report="${REPORT}"
+  local is_dryrun="$DRY"
+  local is_debug="$DEBUG"
+  local is_ci="$CI"
+
   local args=("-r")
 
   args+=("--timeout=5m")
@@ -22,8 +28,22 @@ main() {
     "--junit-report=test-results.xml"
   )
 
-  if test -n "$COVER" ||
-    test -n "$CI"; then
+  if test -n "$is_dryrun"; then
+    args+=("--dry-run")
+  fi
+
+  if test -n "$is_debug"; then
+    args+=("-vv" "--trace")
+  fi
+
+  if test -n "$is_ci"; then
+    args+=("-procs=1" "--compilers=1")
+    args+=("--no-color")
+  else
+    args+=("-p")
+  fi
+
+  if test -n "$is_coverage"; then
     args+=(
       "--cover"
       "--coverprofile=coverage.out"
@@ -31,23 +51,19 @@ main() {
     )
   fi
 
-  if test -n "$DRY"; then
-    args+=("--dry-run")
+  if ! _cmd go run github.com/onsi/ginkgo/v2/ginkgo \
+    run "${args[@]}"; then
+    return $?
   fi
 
-  if test -n "$DEBUG"; then
-    args+=("-vv" "--trace")
+  local report="$PWD/reports/coverage.out"
+  if test -n "$is_coverage" &&
+    test -n "$is_coverage_report" &&
+    test -f "$report"; then
+    _cmd go tool cover \
+      "-html=$report" \
+      "-o=reports/coverage.html"
   fi
-
-  if test -n "$CI"; then
-    args+=("-procs=1" "--compilers=1")
-    args+=("--no-color")
-  else
-    args+=("-p")
-  fi
-
-  _cmd go run github.com/onsi/ginkgo/v2/ginkgo \
-    run "${args[@]}"
 }
 
 main "$@"
