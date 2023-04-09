@@ -27,8 +27,8 @@ var _ = Describe("Converter", func() {
 			ok,
 		)
 	}, func(input any, expected string, expectedOk bool) {
-		convert := xdatatype.NewStringConverter(input)
-		result, ok := convert.B()
+		convert := xdatatype.StringConverter
+		result, ok := convert.B(input)
 
 		Expect(ok).To(Equal(expectedOk))
 		Expect(result).To(Equal(expected))

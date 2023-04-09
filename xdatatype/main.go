@@ -1,7 +1,9 @@
 package xdatatype
 
-import "github.com/kc-workspace/go-lib/xdatatype/dtmodels"
+import (
+	"github.com/kc-workspace/go-lib/xdatatype/dtchecker"
+	"github.com/kc-workspace/go-lib/xdatatype/dtconverter"
+)
 
-func NewStringConverter(input any) dtmodels.Converter[string] {
-	return dtmodels.NewString(input)
-}
+var StringChecker = dtchecker.NewString()
+var StringConverter = dtconverter.NewString()

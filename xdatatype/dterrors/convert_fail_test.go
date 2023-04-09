@@ -1,7 +1,7 @@
 package dterrors_test
 
 import (
-	"fmt"
+	"errors"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -13,18 +13,49 @@ type TestObject struct {
 	Name string
 }
 
-var _ = DescribeTable("ConvertFail", func(input any, outType string, expected string) string {
-	return fmt.Sprintf(
-		"ConvertFail('%v', '%s') should return '%s'",
-		input,
-		outType,
-		expected,
+var _ = Describe("ConvertFailError", func() {
+	var (
+		successEntries = []TableEntry{
+			Entry("Empty input to string",
+				"", "string",
+				"Cannot convert '' to string"),
+			Entry("nil input to string",
+				nil, "string",
+				"Cannot convert '<nil>' to string"),
+			Entry("object input to int",
+				TestObject{Name: "hello"}, "int",
+				"Cannot convert '{hello}' to int"),
+		}
+
+		failureEntries = []TableEntry{
+			Entry("unknown error type",
+				errors.New("unknown error")),
+		}
 	)
-}, func(input any, outType string, expected string) {
-	var err = dterrors.NewConvertFailError(input, outType)
-	Expect(err).To(MatchError(expected))
-},
-	Entry(nil, "", "string", "Cannot convert '' to string"),
-	Entry(nil, nil, "string", "Cannot convert '<nil>' to string"),
-	Entry(nil, TestObject{Name: "hello"}, "int", "Cannot convert '{hello}' to int"),
-)
+
+	DescribeTable("New", func(input any, outType string, expected string) {
+		var err = dterrors.NewConvertFailError(input, outType)
+		Expect(err).To(MatchError(expected))
+	},
+		successEntries,
+	)
+
+	DescribeTable("Success check", func(input any, outType string, expected string) {
+		var err = dterrors.NewConvertFailError(input, outType)
+		var actual, ok = dterrors.IsConvertFailError(err)
+
+		Expect(ok).To(BeTrue())
+		Expect(actual).To(MatchError(expected))
+	},
+		successEntries,
+	)
+
+	DescribeTable("Failure check", func(err error) {
+		var actual, ok = dterrors.IsConvertFailError(err)
+
+		Expect(ok).To(BeFalse())
+		Expect(actual).To(BeNil())
+	},
+		failureEntries,
+	)
+})
